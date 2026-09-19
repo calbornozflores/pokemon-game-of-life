@@ -127,9 +127,9 @@ body {
 .card > .hint:only-child { margin: 0; }
 
 /* ---- Readouts ---- */
-.readouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.readouts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
 .readout { display: flex; flex-direction: column; gap: 0.15rem; }
-.readout.wide { grid-column: span 3; flex-direction: row; justify-content: space-between; align-items: baseline; }
+.readout.wide { grid-column: span 2; flex-direction: row; justify-content: space-between; align-items: baseline; }
 
 .readout .label {
   font-size: 0.68rem;

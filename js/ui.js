@@ -12,9 +12,6 @@
     ['generation', 'alive', 'extinct', 'rolledStat', 'seed', 'leaderboard', 'inspector']
       .forEach(function (id) { this.el[id] = document.getElementById(id); }, this);
     this.lastTop = '';
-    // The roster size is fixed for the run, so it belongs in the label rather
-    // than in the value, where it would wrap the column.
-    document.getElementById('extinctLabel').textContent = 'Extinct / ' + dex.count;
   }
 
   /** A spritesheet slice sized to `px`, as an inline style string. */
@@ -31,7 +28,7 @@
   UI.prototype.updateReadouts = function (sim) {
     this.el.generation.textContent = sim.generation;
     this.el.alive.textContent = sim.aliveCount;
-    this.el.extinct.textContent = sim.extinctCount;
+    this.el.extinct.textContent = sim.extinctCount + ' / ' + sim.speciesCount;
     this.el.rolledStat.textContent = sim.statIdx < 0 ? '—' : global.Life.STAT_NAMES[sim.statIdx];
     this.el.seed.textContent = sim.seed;
   };
