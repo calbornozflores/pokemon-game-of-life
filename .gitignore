@@ -1,0 +1,7 @@
+# build cache (sprites downloaded once, never committed)
+.cache/
+
+# python
+__pycache__/
+*.pyc
+.venv/
