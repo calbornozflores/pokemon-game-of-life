@@ -13,9 +13,10 @@
 <header class="site-header">
   <h1>Pokémon <span>Game of Life</span></h1>
   <p class="tagline">
-    All 1025 species start once on a 70×70 torus, then run Conway's B3/S23.
-    Each generation rolls one base stat — when a cell is born, the strongest of
-    the three neighbours in that stat takes it.
+    All 1025 species start once on a 70×70 torus, then run Conway's B3/S23. Each generation
+    rolls one base stat — when a cell is born, the strongest of the three neighbours in that
+    stat takes it. Expect a sharp crash in the first few generations: that is ordinary
+    Game-of-Life behaviour, not the stat rule at work.
   </p>
 </header>
 
@@ -29,6 +30,7 @@
   </section>
 
   <aside class="sidebar">
+   <div class="sidebar-col">
 
     <div class="card readouts">
       <div class="readout"><span class="label">Generation</span><span class="value" id="generation">0</span></div>
@@ -38,13 +40,16 @@
       <div class="readout wide"><span class="label">Seed</span><span class="value mono" id="seed">—</span></div>
     </div>
 
+    <div class="card" id="inspector">
+      <p class="hint">Click any cell on the board to inspect the species holding it.</p>
+    </div>
+
+   </div>
+   <div class="sidebar-col">
+
     <div class="card">
       <h2>Most territory</h2>
       <ol class="leaderboard" id="leaderboard"><li class="empty">—</li></ol>
-    </div>
-
-    <div class="card" id="inspector">
-      <p class="hint">Click any cell on the board to inspect the species holding it.</p>
     </div>
 
     <div class="card legend">
@@ -57,13 +62,9 @@
         <li><i style="background:var(--stat-spd)"></i>Sp. Def</li>
         <li><i style="background:var(--stat-spe)"></i>Speed</li>
       </ul>
-      <p class="hint">
-        Expect a sharp crash over the first few generations — random placement
-        leaves most neighbourhoods unable to sustain themselves. That is ordinary
-        Game-of-Life behaviour, not the stat rule at work.
-      </p>
     </div>
 
+   </div>
   </aside>
 </main>
 

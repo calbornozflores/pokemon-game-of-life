@@ -18,6 +18,7 @@
     spriteMode: document.getElementById('spriteMode'),
     status: document.getElementById('status'),
     controls: document.querySelector('.controls'),
+    footer: document.querySelector('.site-footer'),
   };
 
   function refresh() {
@@ -59,19 +60,38 @@
 
   function fitBoard() {
     /* Measure the grid column, not `.board` -- `.board` shrink-wraps the canvas,
-     * so measuring it would feed back its own previous size.
-     *
-     * Height matters as much as width: the control bar is sticky, so any board
-     * row that ends up underneath it is both hidden and unclickable. Reserve
-     * its real height rather than guessing. */
-    var boardTop = els.board.getBoundingClientRect().top + window.scrollY;
-    var reserved = boardTop + els.controls.offsetHeight + 56;  // 56 = status line + gaps
-    var available = Math.min(
-      els.board.parentNode.clientWidth,
-      Math.max(420, window.innerHeight - reserved)
-    );
-    renderer.resize(sim, available);
+     * so measuring it would feed back its own previous size. */
+    var panel = els.board.parentNode;
+    var availableH;
+
+    if (window.matchMedia('(min-width: 1240px) and (min-height: 700px)').matches) {
+      /* The page is pinned to the viewport, so the flex layout has already
+       * worked out what is left for the board. Measuring that beats adding up
+       * the chrome by hand -- the arithmetic version silently omitted the
+       * footer and overflowed the page by up to 54px. */
+      availableH = panel.clientHeight - els.status.offsetHeight - 10;
+    } else {
+      /* Flowing layout: subtract the chrome below the board. The control bar is
+       * sticky, so any row left underneath it is hidden and unclickable. */
+      var boardTop = els.board.getBoundingClientRect().top + window.scrollY;
+      availableH = window.innerHeight - boardTop - els.controls.offsetHeight
+        - els.footer.offsetHeight - 56;
+    }
+
+    var size = Math.min(panel.clientWidth, Math.max(280, availableH));
+    if (renderer.cell === Math.max(4, Math.floor(size / sim.w))) return;  // nothing to redo
+    renderer.resize(sim, size);
     renderer.drawAll(sim);
+  }
+
+  /* Re-fit whenever the panel's box actually changes. Reading the box straight
+   * after load raced the flex layout and clamped the board to its 280px floor;
+   * observing the element instead of guessing when layout has settled removes
+   * the race entirely, and covers later reflows for free. The early return in
+   * fitBoard() above keeps this from feeding back on itself. */
+  function watchPanel() {
+    if (typeof ResizeObserver !== 'function') return;
+    new ResizeObserver(function () { fitBoard(); }).observe(els.board.parentNode);
   }
 
   function resetBoard() {
@@ -97,9 +117,10 @@
     window.__sim = sim;
     window.__renderer = renderer;
 
-    fitBoard();
     ui.showInspector(0);
     refresh();
+    fitBoard();
+    watchPanel();
     startingNote = 'Generation 0 — all ' + dex.count + ' species placed, one cell each. Press Start.';
     els.status.textContent = startingNote;
 

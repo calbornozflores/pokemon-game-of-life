@@ -13,6 +13,7 @@ See `README.md` for the rules and how to run it.
 | File | Lines | Role |
 |---|---|---|
 | `index.html` | ~95 | Markup. Loads the five scripts with `defer`, in dependency order |
+| `css/style.css` (desktop block) | — | `@media (min-width:1240px) and (min-height:700px)` pins the page to `100dvh` so nothing scrolls; the sidebar is two `.sidebar-col` flex columns |
 | `css/style.css` | ~290 | All styling. Opens with the shared design tokens |
 | `js/sim.js` | ~200 | The rules. No DOM — the only file with tests |
 | `js/data.js` | ~60 | Fetches `pokemon.json` + atlas, derives archetype colours |
@@ -51,6 +52,25 @@ the sheet from 1304 KB to 282 KB, so it is worth doing.
 **The board must be measured off `.board-panel`, not `.board`.** `.board` is
 `inline-block`, so it shrink-wraps the canvas — measuring it feeds the canvas its
 own previous size and the board collapses to 4px cells.
+
+**Three separate ways the board collapsed while making the page fit one screen.**
+All three share a shape: something the board's own size feeds into was used to
+decide the board's size.
+1. `.layout` had `align-items: start`, so `.board-panel` shrink-wrapped its
+   canvas — and `fitBoard()` reads that panel's height. `align-items: stretch`.
+2. `.layout`, the header, the controls and the footer all centre themselves with
+   `margin: 0 auto`. Once `body` became a *column flex container*, an auto
+   *cross-axis* margin makes an item shrink-to-fit, so the grid column collapsed
+   onto the canvas (panel width 302px instead of 800px). They need
+   `width: 100%`; `max-width` plus the auto margins still do the centring.
+3. Reading the panel box straight after load raced the flex layout and clamped
+   the board to its 280px floor. A `ResizeObserver` on the panel removes the
+   race; `fitBoard()` early-returns when the cell size would not change, so the
+   observer cannot feed back on itself.
+
+A layout check that only asks "does it fit / does it scroll" passes happily with
+a collapsed board. Assert instead that the board *fills* its panel — compare
+`renderer.cell` against the cell size recomputed from the panel box.
 
 **`fitBoard()` has to reserve the control bar's height.** The bar is
 `position: sticky; bottom: 0`, so any board row underneath it is both invisible

@@ -46,7 +46,7 @@
     this.el.leaderboard.innerHTML = top.map(function (entry) {
       var share = ((entry.count / sim.aliveCount) * 100).toFixed(1);
       return '<li>' +
-        '<span class="sprite" style="' + self.spriteStyle(entry.id, 32) + '"></span>' +
+        '<span class="sprite" style="' + self.spriteStyle(entry.id, 26) + '"></span>' +
         '<span class="lb-name">' + dex.names[entry.id - 1] + '</span>' +
         '<span class="lb-count">' + entry.count + '<small>' + share + '%</small></span>' +
         '</li>';
